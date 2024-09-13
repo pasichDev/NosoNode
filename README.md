@@ -1,4 +1,4 @@
-# Nosonode\
+# Nosonode
 [![Supports Windows](https://img.shields.io/badge/support-Windows-blue?logo=Windows)](https://github.comnosocoin/NosoNode/releases/latest)
 [![Supprts Linux](https://img.shields.io/badge/support-Linux-yellow?logo=Linux)](https://github.comnosocoin/NosoNode/releases/latest)
 [![License](https://img.shields.io/github/license/nosocoin/NosoNode)](https://github.com/nosocoin/NosoNode/blob/master/LICENSE)
