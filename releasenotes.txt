@@ -1,4 +1,4 @@
-Version 0.4.4Ab8
+Version 0.4.4Ab9
 
 Official release. Valid for masternodes and servcie providers.
 
