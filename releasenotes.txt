@@ -1,8 +1,8 @@
-Version 0.4.4Ab5
+Version 0.4.4Ab8
 
 Official release. Valid for masternodes and servcie providers.
 
-- Fix bermelo
+- HOTFIX
 
 
 

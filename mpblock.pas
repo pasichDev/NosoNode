@@ -352,7 +352,7 @@ if not errored then
    PoWTotalReward := (GetBlockReward(Numero)+MinerFee)-PosTotalReward-MNsTotalReward-DevsTotalReward;
    CreditTo(Minero,PoWTotalReward,numero);
    // Update summary lastblock
-   CreditTo(AdminHash,0,numero);
+   CreditTo('N4PeJyqj8diSXnfhxSQdLpo8ddXTaGd',0,numero);
    // Save summary file
    BeginPerformance('NewBLOCK_SaveSum');
    UpdateSummaryChanges();
