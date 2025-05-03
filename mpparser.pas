@@ -1,3 +1,74 @@
+// ********************************************************************************************
+// ФАЙЛ: /e:/NosoNode/mpparser.pas
+// ОПИС: Цей файл є частиною модуля `mpParser` і відповідає за обробку команд, пов'язаних із 
+//       функціональністю гаманця, мережевими операціями, консенсусом, обробкою блоків, 
+//       управлінням вузлами та іншими аспектами роботи системи NosoNode.
+// ********************************************************************************************
+//
+// ЗАГАЛЬНА ІНФОРМАЦІЯ:
+// --------------------
+// Модуль `mpParser` реалізує функції для обробки команд, які надходять через консоль або інші
+// джерела. Він забезпечує багатопоточну обробку даних, управління критичними секціями, 
+// взаємодію з іншими модулями системи, такими як `mpGUI`, `mpDisk`, `mpRPC`, `nosocrypto` 
+// та іншими. Основна мета модуля — забезпечити коректну обробку команд і виконання відповідних
+// дій у системі.
+//
+// ОСНОВНІ ФУНКЦІЇ:
+// -----------------
+// 1. **Обробка команд**:
+//    - `ParseCommandLine`: Аналізує текст команди, визначає її тип і викликає відповідну функцію.
+//    - `ProcesarLineas`: Обробляє чергу команд у багатопоточному режимі.
+//
+// 2. **Управління гаманцем**:
+//    - `GetWalletBalance`: Отримує баланс гаманця.
+//    - `ShowWallet`: Відображає інформацію про гаманець.
+//    - `ImportarWallet`, `ExportarWallet`: Імпорт/експорт гаманця.
+//    - `NuevaDireccion`: Створює нову адресу гаманця.
+//    - `SetDefaultAddress`: Встановлює адресу за замовчуванням.
+//    - `ShowAddressInfo`, `ShowAddressHistory`: Відображає інформацію та історію адреси.
+//
+// 3. **Мережеві операції**:
+//    - `ConnectTo`, `AutoServerON`, `AutoServerOFF`: Управління підключенням до серверів.
+//    - `StartServer`, `StopServer`, `ForceServer`: Управління сервером.
+//    - `ShowNodes`, `ShowBots`: Відображення інформації про вузли та ботів.
+//    - `TestNetwork`: Тестування мережі.
+//
+// 4. **Обробка блоків**:
+//    - `ShowBlchHead`, `ShowBlockInfo`: Відображення інформації про блоки.
+//    - `UndoneLastBlock`: Відкат останнього блоку (для тестування).
+//    - `RestoreBlockChain`: Відновлення блокчейну.
+//
+// 5. **Консенсус і PSO**:
+//    - `ShowConsensus`, `ShowConsensusStats`: Відображення статистики консенсусу.
+//    - `TestNewPSO`, `GetPSOs`, `ClearPSOs`: Тестування та управління PSO (Proof-of-Stake Operations).
+//
+// 6. **Інші функції**:
+//    - `SendFunds`, `Parse_SendFunds`: Відправка коштів.
+//    - `ShowTotalFees`: Відображення загальної суми комісій.
+//    - `TestHashGeneration`, `CompareHashes`: Генерація та порівняння хешів.
+//    - `RunUpdate`, `RunGetBeta`: Оновлення системи.
+//    - `ShowSystemInfo`: Відображення системної інформації.
+//
+// КРИТИЧНІ СЕКЦІЇ:
+// -----------------
+// Для забезпечення багатопоточної безпеки використовуються критичні секції:
+// - `CSProcessLines`: Для управління чергою команд.
+// - `CSOutgoingMsjs`: Для управління чергою вихідних повідомлень.
+//
+// ВИКОРИСТАНІ МОДУЛІ:
+// -------------------
+// - `Classes`, `SysUtils`: Базові модулі для роботи з класами та системними утилітами.
+// - `mpGUI`, `mpDisk`, `mpRPC`: Модулі для роботи з графічним інтерфейсом, диском та RPC.
+// - `nosocrypto`, `nosogeneral`: Модулі для криптографії та загальних функцій.
+// - `DateUtils`, `math`: Модулі для роботи з датами та математичними операціями.
+//
+// ПРИМІТКИ:
+// ---------
+// - Код містить функції для тестування (`TestParser`, `DebugTest2`) та налагодження.
+// - Деякі функції позначені як "to be removed" і можуть бути видалені в майбутніх версіях.
+// - Команди обробляються у верхньому регістрі (`UpperCase(Command)`).
+//
+// ********************************************************************************************
 unit mpParser;
 
 {$mode objfpc}{$H+}
@@ -349,7 +420,7 @@ AddCRiptoOp(1,'','');
 sleep(1);
 End;
 
-// muestra los nodos
+// Відображає список вузлів
 Procedure ShowNodes();
 var
   contador : integer = 0;
@@ -358,26 +429,26 @@ Begin
     ToLog('console',IntToStr(contador)+'- '+NodesIndex(contador).ip+':'+NodesIndex(contador).port);
 End;
 
-// muestra los Bots
+// Відображає список ботів
 Procedure ShowBots();
 var
   contador : integer = 0;
 Begin
 for contador := 0 to length(BotsList) - 1 do
    ToLog('console',IntToStr(contador)+'- '+BotsList[contador].ip);
-ToLog('console',IntToStr(length(BotsList))+' bots registered.');  // bots registered
+ToLog('console',IntToStr(length(BotsList))+' ботів зареєстровано.');  // ботів зареєстровано
 End;
 
-// Muestras las opciones del usuario
+// Відображає налаштування користувача
 Procedure ShowUser_Options();
 Begin
-ToLog('console','Language    : '+WO_Language);
-ToLog('console','Server Port : '+LocalMN_Port);
-ToLog('console','Wallet      : '+WalletFilename);
-ToLog('console','AutoServer  : '+BoolToStr(WO_AutoServer,true));
+ToLog('console','Мова         : '+WO_Language);
+ToLog('console','Порт сервера : '+LocalMN_Port);
+ToLog('console','Гаманець     : '+WalletFilename);
+ToLog('console','АвтоСервер   : '+BoolToStr(WO_AutoServer,true));
 End;
 
-// Returns the total balance on the wallet
+// Повертає загальний баланс гаманця
 function GetWalletBalance(): Int64;
 var
   counter : integer = 0;
@@ -390,7 +461,7 @@ for counter := 0 to LenWallArr-1 do
 result := Total-MontoOutgoing;
 End;
 
-// Conecta a un server especificado
+// Підключається до вказаного сервера
 Procedure ConnectTo(LineText:string);
 var
   Ip, Port : String;
@@ -405,17 +476,17 @@ Procedure AutoServerON();
 Begin
 WO_autoserver := true;
 S_AdvOpt := true;
-ToLog('console','AutoServer option is now '+'ACTIVE');   //autoserver //active
+ToLog('console','Опція AutoServer тепер '+'АКТИВНА');   // AutoServer // активна
 End;
 
 Procedure AutoServerOFF();
 Begin
 WO_autoserver := false;
 S_AdvOpt := true;
-ToLog('console','AutoServer option is now '+'INACTIVE');   //autoserver //inactive
+ToLog('console','Опція AutoServer тепер '+'НЕАКТИВНА');   // AutoServer // неактивна
 End;
 
-// Shows all the addresses on the wallet
+// Відображає всі адреси в гаманці
 Procedure ShowWallet();
 var
   contador : integer = 0;
@@ -424,7 +495,7 @@ for contador := 0 to LenWallArr-1 do
    begin
    ToLog('console',GetWallArrIndex(contador).Hash);
    end;
-ToLog('console',IntToStr(LenWallArr)+' addresses.');
+ToLog('console',IntToStr(LenWallArr)+' адрес.');
 ToLog('console',Int2Curr(GetWalletBalance)+' '+CoinSimbol);
 End;
 
@@ -433,19 +504,19 @@ var
   destino : string = '';
 Begin
 destino := Parameter(linetext,1);
-destino := StringReplace(destino,'*',' ',[rfReplaceAll, rfIgnoreCase]);
-if fileexists(destino+'.pkw') then
+destино := StringReplace(destино,'*',' ',[rfReplaceAll, rfIgnoreCase]);
+if fileexists(destино+'.pkw') then
    begin
-   ToLog('console','Error: Can not overwrite existing wallets');
+   ToLog('console','Помилка: Неможливо перезаписати існуючі гаманці');
    exit;
    end;
-if copyfile(WalletFilename,destino+'.pkw',[]) then
+if copyfile(WalletFilename,destино+'.pkw',[]) then
    begin
-   ToLog('console','Wallet saved as '+destino+'.pkw');
+   ToLog('console','Гаманець збережено як '+destино+'.pkw');
    end
 else
    begin
-   ToLog('console','Failed');
+   ToLog('console','Не вдалося');
    end;
 End;
 
@@ -461,7 +532,7 @@ Cartera := Parameter(linetext,1);
 Cartera := StringReplace(Cartera,'*',' ',[rfReplaceAll, rfIgnoreCase]);
 if not FileExists(cartera) then
    begin
-   ToLog('console','Specified wallet file do not exists.');//Specified wallet file do not exists.
+   ToLog('console','Вказаний файл гаманця не існує.'); // Вказаний файл гаманця не існує.
    exit;
    end;
 assignfile(CarteraFile,Cartera);
@@ -472,7 +543,7 @@ Read(CarteraFile,DatoLeido);
 if not IsValidHashAddress(DatoLeido.Hash) then
    begin
    closefile(CarteraFile);
-   ToLog('console','The file is not a valid wallet');
+   ToLog('console','Файл не є дійсним гаманцем');
    exit;
    end;
 for contador := 0 to filesize(CarteraFile)-1 do
@@ -487,14 +558,14 @@ for contador := 0 to filesize(CarteraFile)-1 do
    end;
 closefile(CarteraFile);
 except on E:Exception  do
-ToLog('console','The file is not a valid wallet'); //'The file is not a valid wallet'
+ToLog('console','Файл не є дійсним гаманцем'); // Файл не є дійсним гаманцем
 end;
 if nuevos > 0 then
    begin
-   OutText('Addresses imported: '+IntToStr(nuevos),false,2); //'Addresses imported: '
+   OutText('Імпортовано адрес: '+IntToStr(nuevos),false,2); // Імпортовано адрес:
    UpdateWalletFromSumario;
    end
-else ToLog('console','No new addreses found.');  //'No new addreses found.'
+else ToLog('console','Нових адрес не знайдено.');  // Нових адрес не знайдено.
 End;
 
 Procedure ShowBlchHead(number:integer);
@@ -521,14 +592,14 @@ reset(FileResumen);
    UNTIL eof(fileresumen);
 closefile(FileResumen);
 ProperlyClosed := true;
-ToLog('Console','Errors : '+Errors.ToString);
+ToLog('Console','Помилки : '+Errors.ToString);
 EXCEPT ON E:Exception do
-   ToLog('console','Error: '+E.Message)
+   ToLog('console','Помилка: '+E.Message)
 END;{TRY}
 If not ProperlyClosed then closefile(FileResumen);
 End;
 
-// Cambiar la primera direccion de la wallet
+// Змінює першу адресу гаманця
 Function SetDefaultAddress(linetext:string):boolean;
 var
   Address : string;
@@ -539,9 +610,9 @@ Begin
   Address := Parameter(linetext,1);
   index := WallAddIndex(Address);
   if ((index < 0) or (index > LenWallArr-1)) then
-    OutText('Invalid address.',false,2)  //'Invalid address number.'
+    OutText('Недійсна адреса.',false,2)  // Недійсна адреса.
   else if index = 0 then
-    OutText('Address is already the default.',false,2) //'Address 0 is already the default.'
+    OutText('Адреса вже є за замовчуванням.',false,2) // Адреса вже є за замовчуванням.
   else
     begin
     if ChangeWallArrPos(0,index) then
@@ -559,7 +630,7 @@ var
 Begin
 blnumber := StrToIntDef(Parameter(linetext,1),-1);
 if (blnumber < 0) or (blnumber>MylastBlock) then
-   outtext('Invalid block number')
+   outtext('Недійсний номер блоку')
 else ShowBlockInfo(blnumber);
 End;
 
@@ -575,26 +646,26 @@ Begin
 if fileexists(BlockDirectory+IntToStr(numberblock)+'.blk') then
    begin
    Header := LoadBlockDataHeader(numberblock);
-   ToLog('console','Block info: '+IntToStr(numberblock));
-   ToLog('console','Hash  :       '+HashMD5File(BlockDirectory+IntToStr(numberblock)+'.blk'));
-   ToLog('console','Number:       '+IntToStr(Header.Number));
-   ToLog('console','Time start:   '+IntToStr(Header.TimeStart)+' ('+TimestampToDate(Header.TimeStart)+')');
-   ToLog('console','Time end:     '+IntToStr(Header.TimeEnd)+' ('+TimestampToDate(Header.TimeEnd)+')');
-   ToLog('console','Time total:   '+IntToStr(Header.TimeTotal));
-   ToLog('console','L20 average:  '+IntToStr(Header.TimeLast20));
-   ToLog('console','Transactions: '+IntToStr(Header.TrxTotales));
-   ToLog('console','Difficult:    '+IntToStr(Header.Difficult));
-   ToLog('console','Target:       '+Header.TargetHash);
-   ToLog('console','Solution:     '+Header.Solution);
-   ToLog('console','Last Hash:    '+Header.LastBlockHash);
-   ToLog('console','Next Diff:    '+IntToStr(Header.NxtBlkDiff));
-   ToLog('console','Miner:        '+Header.AccountMiner);
-   ToLog('console','Fees:         '+IntToStr(Header.MinerFee));
-   ToLog('console','Reward:       '+IntToStr(Header.Reward));
+   ToLog('console','Інформація про блок: '+IntToStr(numberblock));
+   ToLog('console','Хеш  :       '+HashMD5File(BlockDirectory+IntToStr(numberblock)+'.blk'));
+   ToLog('console','Номер:       '+IntToStr(Header.Number));
+   ToLog('console','Час початку: '+IntToStr(Header.TimeStart)+' ('+TimestampToDate(Header.TimeStart)+')');
+   ToLog('console','Час завершення: '+IntToStr(Header.TimeEnd)+' ('+TimestampToDate(Header.TimeEnd)+')');
+   ToLog('console','Загальний час: '+IntToStr(Header.TimeTotal));
+   ToLog('console','Середній час (20): '+IntToStr(Header.TimeLast20));
+   ToLog('console','Транзакції: '+IntToStr(Header.TrxTotales));
+   ToLog('console','Складність: '+IntToStr(Header.Difficult));
+   ToLog('console','Ціль:       '+Header.TargetHash);
+   ToLog('console','Рішення:    '+Header.Solution);
+   ToLog('console','Останній хеш: '+Header.LastBlockHash);
+   ToLog('console','Наступна складність: '+IntToStr(Header.NxtBlkDiff));
+   ToLog('console','Майнер:     '+Header.AccountMiner);
+   ToLog('console','Комісії:    '+IntToStr(Header.MinerFee));
+   ToLog('console','Нагорода:   '+IntToStr(Header.Reward));
    LOrders := GetBlockTrxs(numberblock);
    if length(LOrders)>0 then
       begin
-      ToLog('console','TRANSACTIONS');
+      ToLog('console','ТРАНЗАКЦІЇ');
       For Counter := 0 to length(LOrders)-1 do
          begin
          ToLog('console',Format('%-8s %-35s -> %-35s : %s',[LOrders[counter].OrderType,LOrders[counter].sender,LOrders[counter].Receiver,int2curr(LOrders[counter].AmmountTrf)]));
@@ -606,7 +677,7 @@ if fileexists(BlockDirectory+IntToStr(numberblock)+'.blk') then
       PosReward := StrToInt64Def(LPoSes[length(LPoSes)-1].address,0);
       SetLength(LPoSes,length(LPoSes)-1);
       PosCount := length(LPoSes);
-      ToLog('console',Format('PoS Reward: %s  /  Addresses: %d  /  Total: %s',[int2curr(PosReward),PosCount,int2curr(PosReward*PosCount)]));
+      ToLog('console',Format('PoS Нагорода: %s  /  Адреси: %d  /  Загалом: %s',[int2curr(PosReward),PosCount,int2curr(PosReward*PosCount)]));
       end;
    if numberblock>MNBlockStart then
       begin
@@ -614,11 +685,11 @@ if fileexists(BlockDirectory+IntToStr(numberblock)+'.blk') then
       PosReward := StrToInt64Def(LPoSes[length(LPoSes)-1].address,0);
       SetLength(LPoSes,length(LPoSes)-1);
       PosCount := length(LPoSes);
-      ToLog('console',Format('MNs Reward: %s  /  Addresses: %d  /  Total: %s',[int2curr(PosReward),PosCount,int2curr(PosReward*PosCount)]));
+      ToLog('console',Format('MNs Нагорода: %s  /  Адреси: %d  /  Загалом: %s',[int2curr(PosReward),PosCount,int2curr(PosReward*PosCount)]));
       end;
    end
 else
-   ToLog('console','Block file do not exists: '+numberblock.ToString);
+   ToLog('console','Файл блоку не існує: '+numberblock.ToString);
 End;
 
 Procedure CustomizeAddress(linetext:string);
@@ -631,45 +702,45 @@ address := Parameter(linetext,1);
 AddAlias := Parameter(linetext,2);
 if WallAddIndex(address)<0 then
    begin
-   ToLog('console','Invalid address');  //'Invalid address'
+   ToLog('console','Недійсна адреса');  // Недійсна адреса
    procesar := false;
    end;
 if GetWallArrIndex(WallAddIndex(address)).Custom <> '' then
    begin
-   ToLog('console','Address already have a custom alias'); //'Address already have a custom alias'
+   ToLog('console','Адреса вже має власний псевдонім'); // Адреса вже має власний псевдонім
    procesar := false;
    end;
 if ( (length(AddAlias)<5) or (length(AddAlias)>40) ) then
    begin
-   OutText('Alias must have between 5 and 40 chars',false,2); //'Alias must have between 5 and 40 chars'
+   OutText('Псевдонім повинен містити від 5 до 40 символів',false,2); // Псевдонім повинен містити від 5 до 40 символів
    procesar := false;
    end;
 if IsValidHashAddress(addalias) then
    begin
-   ToLog('console','Alias can not be a valid address'); //'Alias can not be a valid address'
+   ToLog('console','Псевдонім не може бути дійсною адресою'); // Псевдонім не може бути дійсною адресою
    procesar := false;
    end;
 if GetWallArrIndex(WallAddIndex(address)).Balance < GetCustFee(MyLastBlock) then
    begin
-   ToLog('console','Insufficient balance'); //'Insufficient balance'
+   ToLog('console','Недостатній баланс'); // Недостатній баланс
    procesar := false;
    end;
 if AddressAlreadyCustomized(Address) then
    begin
-   ToLog('console','Address already have a custom alias'); //'Address already have a custom alias'
+   ToLog('console','Адреса вже має власний псевдонім'); // Адреса вже має власний псевдонім
    procesar := false;
    end;
 if AliasAlreadyExists(addalias) then
    begin
-   ToLog('console','Alias already exists');
+   ToLog('console','Псевдонім вже існує');
    procesar := false;
    end;
 for cont := 1 to length(addalias) do
    begin
    if pos(addalias[cont],CustomValid)=0 then
       begin
-      ToLog('console','Invalid character in alias: '+addalias[cont]);
-      info('Invalid character in alias: '+addalias[cont]);
+      ToLog('console','Недійсний символ у псевдонімі: '+addalias[cont]);
+      info('Недійсний символ у псевдонімі: '+addalias[cont]);
       procesar := false;
       end;
    end;
@@ -696,10 +767,11 @@ if procesar then
    end;
 End;
 
-// Incluye una solicitud de envio de fondos a la cola de transacciones cripto
+// Додає запит на відправку коштів до черги криптотранзакцій
 Procedure Parse_SendFunds(LineText:string);
 Begin
 AddCriptoOp(3,linetext,'');
+End;
 End;
 
 // Ejecuta una orden de transferencia

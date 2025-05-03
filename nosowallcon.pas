@@ -1,6 +1,103 @@
 unit NosoWallCon;
 
 {
+  nosowallcon 1.1
+  January 26th, 2024
+  Stand-alone unit to control wallet addresses file and array.
+}
+
+# Documentation
+
+## Types
+### WalletData
+A packed record representing wallet information:
+- `Hash`: `String[40]` - The public hash or wallet address.
+- `Custom`: `String[40]` - Custom name for the wallet address, if personalized.
+- `PublicKey`: `String[255]` - The public key associated with the wallet.
+- `PrivateKey`: `String[255]` - The private key associated with the wallet.
+- `Balance`: `int64` - The last known balance of the wallet.
+- `Pending`: `int64` - The last known pending balance of the wallet.
+- `Score`: `int64` - The state or score of the wallet record.
+- `LastOP`: `int64` - The Unix timestamp of the last operation.
+
+## Functions and Procedures
+
+### Wallet Management
+- **`SetWalletFileName(Fname: String): Boolean`**
+  Sets the wallet filename. If the file does not exist, it creates a new wallet file. Returns `false` if the file does not exist.
+
+- **`ClearWalletArray()`**
+  Clears the in-memory wallet array.
+
+- **`InsertToWallArr(LData: WalletData): Boolean`**
+  Inserts a wallet record into the wallet array if it does not already exist. Returns `true` if successful.
+
+- **`GetWallArrIndex(Index: Integer): WalletData`**
+  Retrieves a wallet record from the wallet array by index. Returns a default `WalletData` if the index is out of bounds.
+
+- **`WallAddIndex(Address: String): Integer`**
+  Finds the index of a wallet in the array by its hash or custom name. Returns `-1` if not found.
+
+- **`LenWallArr(): Integer`**
+  Returns the length of the wallet array.
+
+- **`ChangeWallArrPos(PosA, PosB: Integer): Boolean`**
+  Swaps the positions of two wallet records in the array. Returns `true` if successful.
+
+- **`ClearWallPendings()`**
+  Resets the pending balance of all wallets in the array to `0`.
+
+- **`SetPendingForAddress(Index: Integer; Value: int64)`**
+  Sets the pending balance for a specific wallet by index.
+
+### File Operations
+- **`GetAddressFromFile(FileLocation: String; out WalletInfo: WalletData): Boolean`**
+  Reads a wallet record from a file. Returns `true` if successful.
+
+- **`ImportAddressesFromBackup(BakFolder: String): Integer`**
+  Imports wallet records from backup files in a specified folder. Returns the number of successfully imported records.
+
+- **`SaveAddresstoFile(FileName: String; LData: WalletData): Boolean`**
+  Saves a wallet record to a specified file. Returns `true` if successful.
+
+- **`CreateNewWallet(): Boolean`**
+  Creates a new wallet file with a newly generated address. Clears the wallet array before creation.
+
+- **`GetWalletAsStream(out LStream: TMemoryStream): int64`**
+  Loads the wallet file into a memory stream. Returns the size of the stream.
+
+- **`SaveWalletToFile(): Boolean`**
+  Saves the wallet array to the wallet file. Creates a backup of the file before saving. Returns `true` if successful.
+
+- **`LoadWallet(wallet: String): Boolean`**
+  Loads wallet records from a file into the wallet array. Returns `true` if successful.
+
+- **`VerifyAddressOnDisk(HashAddress: String): Boolean`**
+  Verifies if a specific wallet address exists in the wallet file. Returns `true` if found.
+
+## Variables
+- **`WalletArray: array of WalletData`**
+  The in-memory array of wallet records.
+
+- **`FileWallet: file of WalletData`**
+  The file used to store wallet records.
+
+- **`WalletFilename: string`**
+  The default filename for the wallet file (`NOSODATA/wallet.pkw`).
+
+- **`CS_WalletFile: TRTLCriticalSection`**
+  Critical section for synchronizing access to the wallet file.
+
+- **`CS_WalletArray: TRTLCriticalSection`**
+  Critical section for synchronizing access to the wallet array.
+
+## Initialization and Finalization
+- **Initialization**
+  - Initializes critical sections for `CS_WalletArray` and `CS_WalletFile`.
+  - Sets the initial length of `WalletArray` to `0`.
+
+- **Finalization**
+  - Frees the critical sections for `CS_WalletArray` and `CS_WalletFile`.
 nosowallcon 1.1
 January 26th, 2024
 Stand alone unit to control wallet addresses file and array

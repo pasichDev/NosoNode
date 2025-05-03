@@ -1,3 +1,108 @@
+{
+/**
+ * ### Опис модуля `mpMN`
+ * 
+ * Модуль `mpMN` відповідає за управління та перевірку мастернод у системі. 
+ * Він включає функціонал для роботи з перевірками мастернод, обробкою звітів, 
+ * управлінням списком мастернод, а також взаємодією з мережею.
+ * 
+ * ---
+ * 
+ * ### Інтерфейс модуля
+ * 
+ * #### Використовувані модулі:
+ * - `Classes`, `SysUtils` — стандартні модулі для роботи з класами та системними утилітами.
+ * - `MasterPaskalform`, `mpcoin`, `mpgui` — модулі для роботи з графічним інтерфейсом та криптовалютами.
+ * - `IdTCPClient`, `IdGlobal` — модулі для роботи з TCP-з'єднаннями.
+ * - `strutils`, `nosodebug`, `nosogeneral`, `nosocrypto`, `nosotime` — утиліти для роботи з рядками, налагодженням, криптографією та часом.
+ * - `nosounit`, `nosowallcon`, `nosonetwork`, `nosomasternodes` — модулі для роботи з мережею та мастернодами.
+ * 
+ * ---
+ * 
+ * ### Основні типи та класи
+ * 
+ * #### `TThreadMNVerificator`
+ * - **Опис:** Клас потоку для перевірки мастернод.
+ * - **Методи:**
+ *   - `constructor Create(const CreatePaused: Boolean; const ConexSlot: Integer);`
+ *     - Конструктор для створення потоку перевірки.
+ *   - `procedure Execute; override;`
+ *     - Основний метод виконання перевірки мастернод.
+ * 
+ * ---
+ * 
+ * ### Основні функції та процедури
+ * 
+ * #### Перевірка мастернод:
+ * - `Function NoVerificators(): Integer;`
+ *   - Повертає кількість активних перевірок.
+ * - `Function RunMNVerification(): String;`
+ *   - Запускає процес перевірки мастернод.
+ * - `Function GetMNCheckFromString(Linea: String): TMNCheck;`
+ *   - Конвертує рядок у структуру перевірки мастернод.
+ * - `Function GetMNsChecksCount(): Integer;`
+ *   - Повертає кількість перевірок мастернод.
+ * - `Procedure ClearMNsChecks();`
+ *   - Очищає всі перевірки мастернод.
+ * - `Function MnsCheckExists(Ip: String): Boolean;`
+ *   - Перевіряє, чи існує перевірка для заданої IP-адреси.
+ * - `Procedure AddMNCheck(ThisData: TMNCheck);`
+ *   - Додає нову перевірку мастернод.
+ * 
+ * #### Робота зі списком мастернод:
+ * - `Function GetMNsListLength(): Integer;`
+ *   - Повертає кількість мастернод у списку.
+ * - `Procedure ClearMNsList();`
+ *   - Очищає список мастернод.
+ * - `Function MyMNIsListed(): Boolean;`
+ *   - Перевіряє, чи є локальна мастернода у списку.
+ * - `Function GetMNodeFromString(const StringData: String; out ToMNode: TMNode): Boolean;`
+ *   - Конвертує рядок у структуру мастерноди.
+ * - `Function IsLegitNewNode(ThisNode: TMNode): Boolean;`
+ *   - Перевіряє, чи є нова мастернода легітимною.
+ * - `Procedure CheckMNReport(LineText: String);`
+ *   - Обробляє звіт про мастерноду.
+ * - `Procedure SendMNsList(Slot: Integer);`
+ *   - Відправляє список мастернод.
+ * 
+ * #### Робота з файлами мастернод:
+ * - `Function LoadMNsFile(): String;`
+ *   - Завантажує файл мастернод.
+ * - `Procedure SaveMNsFile(GotText: String);`
+ *   - Зберігає файл мастернод.
+ * - `Procedure PTC_MNFile(Linea: String);`
+ *   - Обробляє вхідний файл мастернод.
+ * 
+ * #### Інші функції:
+ * - `Function GetMNReportString(): String;`
+ *   - Генерує рядок звіту для мастерноди.
+ * - `Function GetMNsAddresses(): String;`
+ *   - Повертає адреси мастернод.
+ * - `Function GetVerificatorsText(): String;`
+ *   - Повертає текст перевіряючих вузлів.
+ * 
+ * ---
+ * 
+ * ### Глобальні змінні
+ * - `ArrayIPsProcessed` — масив оброблених IP-адрес.
+ * - `OpenVerificators` — кількість відкритих перевірок.
+ * - `MNsList` — список мастернод.
+ * - `VerifiedNodes` — список перевірених вузлів.
+ * - `UnconfirmedIPs` — кількість непідтверджених IP-адрес.
+ * 
+ * ---
+ * 
+ * ### Ініціалізація та фіналізація
+ * - Ініціалізація та завершення критичних секцій для забезпечення потокобезпеки.
+ * 
+ * ---
+ * 
+ * ### Примітки
+ * - Модуль використовує багатопоточність для перевірки мастернод.
+ * - Забезпечує потокобезпеку через використання критичних секцій.
+ * - Підтримує роботу з файлами для збереження та завантаження даних мастернод.
+ */
+}
 unit mpMN;
 
 {$mode objfpc}{$H+}

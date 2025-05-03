@@ -1,6 +1,98 @@
 unit nosopsos;
 
 {
+  nosopsos 1.0
+  May 30th, 2023
+  Stand-alone unit to handle all PSOs (active and expired) on the Noso mainnet.
+  Required: Nosogeneral
+}
+
+# Documentation for `nosopsos` Unit
+
+## Overview
+The `nosopsos` unit is responsible for managing all PSOs (Proposal Smart Objects) on the Noso mainnet, including both active and expired PSOs. It provides functionality for file access, locked masternode control, and PSO header and data management. The unit relies on critical sections to ensure thread safety during concurrent operations.
+
+---
+
+## Types
+
+### `TPSOData`
+Represents the structure of a PSO (Proposal Smart Object).
+- **Mode**: Integer indicating the mode of the PSO.
+- **Hash**: String representing the unique hash of the PSO.
+- **Owner**: String representing the owner of the PSO.
+- **Expire**: Integer indicating the expiration block of the PSO.
+- **Members**: String containing the members associated with the PSO.
+- **Params**: String containing additional parameters for the PSO.
+
+### `TMNsLock`
+Represents a locked masternode.
+- **address**: String[32] containing the masternode's address.
+- **expire**: Integer indicating the block number when the lock expires.
+
+### `TPSOHeader`
+Represents the header information for PSOs.
+- **Block**: Integer indicating the block number associated with the PSOs.
+- **MNsLock**: Integer representing the count of locked masternodes.
+- **count**: Integer representing the total number of PSOs.
+
+### `TPSOsArray`
+An array of `TPSOData` representing multiple PSOs.
+
+---
+
+## Constants
+
+- **PSOsFileName**: Default file path for storing PSO data.
+- **MNsLockExpireLapse**: Integer representing the expiration lapse for locked masternodes.
+- **PSOTimestamp, PSOBlock, PSOAction, PSOFee, PSODuration, PSOTarget, PSOMinSize, PSOMaxSize, PSOOverfill, PSOSource**: String constants representing various PSO parameter labels.
+
+---
+
+## Variables
+
+- **PSOsArray**: Array of `TPSOData` storing all PSOs.
+- **MNSLockArray**: Array of `TMNsLock` storing locked masternodes.
+- **PSOHeader**: `TPSOHeader` storing the current PSO header information.
+- **PSOFileHash**: String storing the hash of the PSO file.
+- **CS_PSOsArray, CS_PSOFile, CS_LockedMNs, CS_PSOHeaders**: Critical sections for thread-safe operations.
+
+---
+
+## Functions
+
+### File Access
+- **`GetPSOHeadersFromFile`**: Loads PSO headers from the file.
+- **`LoadPSOFileFromDisk`**: Loads PSO data from the disk into memory.
+- **`SavePSOFileToDisk`**: Saves PSO data to the disk for a given block number.
+- **`GetPSOsAsMemStream`**: Retrieves PSO data as a memory stream.
+- **`SavePSOsToFile`**: Saves a memory stream containing PSO data to the file.
+
+### Locked Masternodes Control
+- **`GetLockedMNsCount`**: Returns the count of locked masternodes.
+- **`GetLockedMNIndex`**: Retrieves a locked masternode by index.
+- **`AddLockedMM`**: Adds a new locked masternode.
+- **`ClearExpiredLockedMNs`**: Clears expired locked masternodes based on the current block number.
+- **`IsLockedMN`**: Checks if a given address is a locked masternode.
+- **`LockedMNsRawString`**: Returns a raw string representation of locked masternodes.
+
+### PSO Headers Control
+- **`GetPSOHeaders`**: Retrieves the current PSO headers.
+- **`SetPSOHeaders`**: Updates the PSO headers with new data.
+
+### PSO Management
+- **`GetPSOValue`**: Retrieves a specific parameter value from a PSO's parameters.
+- **`AddNewPSO`**: Adds a new PSO to the array.
+- **`GetPSOsCopy`**: Returns a copy of the current PSOs array.
+
+---
+
+## Initialization and Finalization
+
+- **Initialization**: Initializes critical sections for thread-safe operations.
+- **Finalization**: Frees critical sections to release resources.
+
+---
 nosopsos 1.0
 May 30th, 2023
 Stand alone unit to handle all PSOs (active and expired) on noso mainnet.

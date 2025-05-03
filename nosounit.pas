@@ -1,6 +1,25 @@
 unit nosounit;
 
 {
+  Nosounit 1.0
+  January 8th, 2023
+  Noso project unit to handle summary
+
+  This unit provides functionalities for managing summary data, including creating, updating, and accessing summary files. 
+  It also includes utilities for handling protocol orders, summary indexing, and block records. The unit ensures thread-safe 
+  operations using critical sections for concurrent access.
+
+  Key Features:
+  - Protocol utility functions for creating protocol orders.
+  - Summary management functions for creating, zipping, and restoring summary files.
+  - Indexing functions for efficient access to summary data.
+  - Functions for handling balances, payments, and customizations.
+  - Thread-safe operations using critical sections.
+
+  Dependencies:
+  - Classes, SysUtils, Zipper
+  - nosocrypto, nosodebug, nosogeneral
+}
 Nosounit 1.0
 January 8th 2023
 Noso project unit to handle summary

@@ -1,6 +1,78 @@
 unit NosoTime;
 
 {
+  Nosotime 1.3
+  September 20th, 2023
+  Noso Time Unit for time synchronization on Noso project.
+  Requires indy package. (To-do: remove this dependency)
+
+  Changes:
+  - Random use of NTP servers.
+  - Async process limited to every 5 seconds.
+  - Block time related functions.
+  - Test NTPs.
+}
+
+{
+  TThreadUpdateOffset:
+  - A thread class used to update the time offset asynchronously.
+  - Hosts: A string containing the NTP servers to be used.
+  - Execute: Overrides the thread's execution logic to call GetTimeOffset.
+
+  GetNetworkTimestamp:
+  - Retrieves the UNIX timestamp from a specified NTP server.
+  - Parameters:
+    - hostname: The NTP server hostname.
+  - Returns: The UNIX timestamp as an int64 or 0 if an error occurs.
+
+  TimestampToDate:
+  - Converts a UNIX timestamp to a human-readable date string.
+  - Parameters:
+    - timestamp: The UNIX timestamp to convert.
+  - Returns: A string representation of the date.
+
+  GetTimeOffset:
+  - Calculates the time offset using a random NTP server from a provided list.
+  - Parameters:
+    - NTPServers: A colon-separated string of NTP server hostnames.
+  - Returns: The calculated time offset as an int64.
+
+  UTCTime:
+  - Retrieves the current UTC UNIX timestamp adjusted by the time offset.
+  - Returns: The adjusted UNIX timestamp as an int64.
+
+  UTCTimeStr:
+  - Retrieves the current UTC UNIX timestamp as a string for compatibility.
+  - Returns: The adjusted UNIX timestamp as a string.
+
+  UpdateOffset:
+  - Initiates an asynchronous update of the time offset using a thread.
+  - Parameters:
+    - NTPServers: A colon-separated string of NTP server hostnames.
+
+  TimeSinceStamp:
+  - Calculates the time elapsed since a given UNIX timestamp.
+  - Parameters:
+    - Lvalue: The UNIX timestamp to calculate the elapsed time from.
+  - Returns: A string representing the elapsed time in seconds, minutes, hours, days, months, or years.
+
+  BlockAge:
+  - Calculates the current block age based on the UTC time.
+  - Returns: The block age as an integer.
+
+  NextBlockTimeStamp:
+  - Calculates the expected UNIX timestamp for the next block.
+  - Returns: The timestamp as an int64.
+
+  IsBlockOpen:
+  - Determines if the current block is in the operation period.
+  - Returns: A boolean indicating whether the block is open.
+
+  Variables:
+  - NosoT_TimeOffset: The current time offset as an int64.
+  - NosoT_LastServer: The last NTP server used as a string.
+  - NosoT_LastUpdate: The last update time as an int64.
+}
 Nosotime 1.3
 September 20th, 2023
 Noso Time Unit for time synchronization on Noso project.
