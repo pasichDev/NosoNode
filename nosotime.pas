@@ -72,7 +72,7 @@ unit NosoTime;
   - NosoT_TimeOffset: The current time offset as an int64.
   - NosoT_LastServer: The last NTP server used as a string.
   - NosoT_LastUpdate: The last update time as an int64.
-}
+
 Nosotime 1.3
 September 20th, 2023
 Noso Time Unit for time synchronization on Noso project.

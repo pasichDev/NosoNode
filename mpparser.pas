@@ -504,15 +504,15 @@ var
   destino : string = '';
 Begin
 destino := Parameter(linetext,1);
-destино := StringReplace(destино,'*',' ',[rfReplaceAll, rfIgnoreCase]);
-if fileexists(destино+'.pkw') then
+destino := StringReplace(destino,'*',' ',[rfReplaceAll, rfIgnoreCase]);
+if fileexists(destino+'.pkw') then
    begin
    ToLog('console','Помилка: Неможливо перезаписати існуючі гаманці');
    exit;
    end;
-if copyfile(WalletFilename,destино+'.pkw',[]) then
+if copyfile(WalletFilename,destino+'.pkw',[]) then
    begin
-   ToLog('console','Гаманець збережено як '+destино+'.pkw');
+   ToLog('console','Гаманець збережено як '+destino+'.pkw');
    end
 else
    begin
@@ -771,7 +771,6 @@ End;
 Procedure Parse_SendFunds(LineText:string);
 Begin
 AddCriptoOp(3,linetext,'');
-End;
 End;
 
 // Ejecuta una orden de transferencia

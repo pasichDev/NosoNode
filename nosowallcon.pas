@@ -4,7 +4,7 @@ unit NosoWallCon;
   nosowallcon 1.1
   January 26th, 2024
   Stand-alone unit to control wallet addresses file and array.
-}
+
 
 # Documentation
 

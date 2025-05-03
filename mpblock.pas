@@ -63,10 +63,7 @@ uses
 
 Procedure CrearBloqueCero();
 Procedure BuildNewBlock(Numero,TimeStamp: Int64; TargetHash, Minero, Solucion:String);
-//Function GetDiffHashrate(bestdiff:String):integer;
-//Function BestHashReadeable(BestDiff:String):string;
-//function GetDiffForNextBlock(UltimoBloque,Last20Average,lastblocktime,previous:integer):integer;
-//function GetLast20Time(LastBlTime:integer):integer;
+
 function GetBlockReward(BlNumber:int64):Int64;
 Function GuardarBloque(NombreArchivo:string;Cabezera:BlockHeaderData;Ordenes:array of TOrderData;
                         PosPay:Int64;PoSnumber:integer;PosAddresses:array of TArrayPos;
@@ -595,60 +592,6 @@ MemStr.Free;
 EndPerformance('GuardarBloque');
 End;
 
-{
-// Carga la informacion del bloque
-function LoadBlockDataHeader(BlockNumber:integer):BlockHeaderData;
-var
-  MemStr: TMemoryStream;
-  Header : BlockHeaderData;
-  ArchData : String;
-Begin
-Header := Default(BlockHeaderData);
-ArchData := BlockDirectory+IntToStr(BlockNumber)+'.blk';
-MemStr := TMemoryStream.Create;
-   TRY
-   MemStr.LoadFromFile(ArchData);
-   MemStr.Position := 0;
-   MemStr.Read(Header, SizeOf(Header));
-   EXCEPT ON E:Exception do
-      begin
-      ToLog('console','Error loading Header from block '+IntToStr(BlockNumber)+':'+E.Message);
-      end;
-   END{Try};
-MemStr.Free;
-Result := header;
-End;
-}
-
-{
-// Devuelve las transacciones del bloque
-function GetBlockTrxs(BlockNumber:integer):TBlockOrdersArray;
-var
-  ArrTrxs : TBlockOrdersArray;
-  MemStr: TMemoryStream;
-  Header : BlockHeaderData;
-  ArchData : String;
-  counter : integer;
-  TotalTrxs, totalposes : integer;
-  posreward : int64;
-Begin
-Setlength(ArrTrxs,0);
-ArchData := BlockDirectory+IntToStr(BlockNumber)+'.blk';
-MemStr := TMemoryStream.Create;
-   try
-   MemStr.LoadFromFile(ArchData);
-   MemStr.Position := 0;
-   MemStr.Read(Header, SizeOf(Header));
-   TotalTrxs := header.TrxTotales;
-   SetLength(ArrTrxs,TotalTrxs);
-   For Counter := 0 to TotalTrxs-1 do
-      MemStr.Read(ArrTrxs[Counter],Sizeof(ArrTrxs[Counter])); // read each record
-   Except on E: Exception do // nothing, the block is not founded
-   end;
-MemStr.Free;
-Result := ArrTrxs;
-End;
-}
 
 Function GetBlockPoSes(BlockNumber:integer): BlockArraysPos;
 var

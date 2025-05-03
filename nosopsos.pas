@@ -5,7 +5,7 @@ unit nosopsos;
   May 30th, 2023
   Stand-alone unit to handle all PSOs (active and expired) on the Noso mainnet.
   Required: Nosogeneral
-}
+
 
 # Documentation for `nosopsos` Unit
 
