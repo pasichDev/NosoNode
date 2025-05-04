@@ -2,27 +2,27 @@ unit nosounit;
 
 {
   Nosounit 1.0
-  January 8th, 2023
-  Noso project unit to handle summary
+  8 січня 2023 року
+  Модуль проекту Noso для роботи з підсумками
 
-  This unit provides functionalities for managing summary data, including creating, updating, and accessing summary files. 
-  It also includes utilities for handling protocol orders, summary indexing, and block records. The unit ensures thread-safe 
-  operations using critical sections for concurrent access.
+  Цей модуль надає функціонал для управління даними підсумків, включаючи створення, оновлення та доступ до файлів підсумків. 
+  Він також включає утиліти для обробки протокольних замовлень, індексації підсумків та записів блоків. Модуль забезпечує 
+  потокобезпечні операції за допомогою критичних секцій для одночасного доступу.
 
-  Key Features:
-  - Protocol utility functions for creating protocol orders.
-  - Summary management functions for creating, zipping, and restoring summary files.
-  - Indexing functions for efficient access to summary data.
-  - Functions for handling balances, payments, and customizations.
-  - Thread-safe operations using critical sections.
+  Основні можливості:
+  - Утиліти протоколу для створення протокольних замовлень.
+  - Функції управління підсумками для створення, архівації та відновлення файлів підсумків.
+  - Функції індексації для ефективного доступу до даних підсумків.
+  - Функції для роботи з балансами, платежами та налаштуваннями.
+  - Потокобезпечні операції за допомогою критичних секцій.
 
-  Dependencies:
+  Залежності:
   - Classes, SysUtils, Zipper
   - nosocrypto, nosodebug, nosogeneral
 
 Nosounit 1.0
-January 8th 2023
-Noso project unit to handle summary
+8 січня 2023 року
+Модуль проекту Noso для роботи з підсумками
 }
 
 {$mode ObjFPC}{$H+}

@@ -1,3 +1,64 @@
+{// ============================================================================
+// Юніт: mpRPC
+// Опис: Реалізація RPC (Remote Procedure Call) для NosoNode. Забезпечує
+//        обробку JSON-RPC запитів, взаємодію з блокчейном, гаманцем, 
+//        майстернодами та іншими компонентами системи Noso.
+// Автор: (вкажіть автора, якщо відомо)
+// ============================================================================
+
+/**
+ * Процедури керування RPC:
+ * - SetRPCPort(LineText: string): Встановлює порт для RPC-сервера.
+ * - setRPCpassword(newpassword: string): Встановлює новий пароль для RPC.
+ * - SetRPCOn(): Вмикає RPC-сервер.
+ * - SetRPCOff(): Вимикає RPC-сервер.
+ *
+ * Основні функції парсингу та відповіді:
+ * - IsValidJSON(MyJSONstring: string): Перевіряє, чи є рядок валідним JSON.
+ * - GetJSONErrorString(ErrorCode: integer): Повертає текстове пояснення коду помилки.
+ * - GetJSONErrorCode(ErrorCode, JSONIdNumber: integer): Формує JSON з кодом помилки.
+ * - GetJSONResponse(ResultToSend: string; JSONIdNumber: integer): Формує JSON-відповідь.
+ * - ParseRPCJSON(jsonreceived: string): Парсить вхідний JSON-RPC запит та повертає відповідь.
+ * - ObjectFromString(MyString: string): Формує JSON-об'єкт з рядка параметрів.
+ *
+ * RPC-методи для взаємодії з блокчейном та гаманцем:
+ * - RPC_Restart(NosoPParams: string): Перезапускає вузол.
+ * - RPC_Banned(NosoPParams: string): Повертає статус "заблоковано".
+ * - RPC_AddressBalance(NosoPParams: string): Повертає баланс адреси.
+ * - RPC_OrderInfo(NosoPParams: string): Інформація про ордер.
+ * - RPC_Blockinfo(NosoPParams: string): Інформація про блок.
+ * - RPC_Mainnetinfo(NosoPParams: string): Інформація про основну мережу.
+ * - RPC_PendingOrders(NosoPParams: string): Список очікуючих ордерів.
+ * - RPC_LockedMNs(NosoPParams: string): Список заблокованих майстернод.
+ * - RPC_GetPeers(NosoPParams: string): Список підключених пірів.
+ * - RPC_BlockOrders(NosoPParams: string): Ордери в блоці.
+ * - RPC_Masternodes(NosoPParams: string): Список майстернод.
+ * - RPC_Blockmns(NosoPParams: string): Майстерноди в блоці.
+ * - RPC_WalletBalance(NosoPParams: string): Баланс гаманця.
+ * - RPC_NewAddress(NosoPParams: string): Створення нової адреси.
+ * - RPC_NewAddressFull(NosoPParams: string): Створення нової адреси з ключами.
+ * - RPC_ValidateAddress(NosoPParams: string): Перевірка локальної адреси.
+ * - RPC_SetDefault(NosoPParams: string): Встановлення адреси за замовчуванням.
+ * - RPC_GVTInfo(NosoPParams: string): Інформація про GVT.
+ * - RPC_CheckCertificate(NosoPParams: string): Перевірка сертифікату.
+ * - RPC_SubmitOrder(NosoPParams: string; waitresponse: boolean): Відправка ордеру.
+ * - RPC_SendFunds(NosoPParams: string): Відправка коштів.
+ *
+ * Внутрішні допоміжні функції:
+ * - parameter(...): Парсинг параметрів з рядка.
+ * - ToLog(...): Логування подій та помилок.
+ * - BeginPerformance/EndPerformance(...): Вимірювання продуктивності.
+ *
+ * Залежності:
+ * - mpgui, FPJSON, jsonparser, strutils, mpCoin, mpRed, mpBlock, nosodebug,
+ *   nosogeneral, nosocrypto, nosounit, nosoconsensus, nosowallcon, nosopsos,
+ *   nosonetwork, nosoblock, nosogvts, nosomasternodes, MasterPaskalForm,
+ *   mpparser, mpDisk, mpProtocol.
+ *
+ * Примітка:
+ * - Для коректної роботи необхідно налаштувати залежності та зовнішні модулі.
+ * - Деякі функції використовують глобальні змінні та структури, визначені в інших частинах проєкту.
+ */}
 unit mpRPC;
 
 {$mode objfpc}{$H+}

@@ -2,105 +2,105 @@ unit NosoWallCon;
 
 {
   nosowallcon 1.1
-  January 26th, 2024
-  Stand-alone unit to control wallet addresses file and array.
+  26 січня 2024 року
+  Окремий модуль для управління файлом адрес гаманців та масивом.
 
 
-# Documentation
+# Документація
 
-## Types
+## Типи
 ### WalletData
-A packed record representing wallet information:
-- `Hash`: `String[40]` - The public hash or wallet address.
-- `Custom`: `String[40]` - Custom name for the wallet address, if personalized.
-- `PublicKey`: `String[255]` - The public key associated with the wallet.
-- `PrivateKey`: `String[255]` - The private key associated with the wallet.
-- `Balance`: `int64` - The last known balance of the wallet.
-- `Pending`: `int64` - The last known pending balance of the wallet.
-- `Score`: `int64` - The state or score of the wallet record.
-- `LastOP`: `int64` - The Unix timestamp of the last operation.
+Упакований запис, що представляє інформацію про гаманець:
+- `Hash`: `String[40]` - Публічний хеш або адреса гаманця.
+- `Custom`: `String[40]` - Індивідуальна назва для адреси гаманця, якщо вона персоналізована.
+- `PublicKey`: `String[255]` - Публічний ключ, пов'язаний із гаманцем.
+- `PrivateKey`: `String[255]` - Приватний ключ, пов'язаний із гаманцем.
+- `Balance`: `int64` - Останній відомий баланс гаманця.
+- `Pending`: `int64` - Останній відомий баланс очікуваних транзакцій гаманця.
+- `Score`: `int64` - Стан або рейтинг запису гаманця.
+- `LastOP`: `int64` - Unix-час останньої операції.
 
-## Functions and Procedures
+## Функції та процедури
 
-### Wallet Management
+### Управління гаманцем
 - **`SetWalletFileName(Fname: String): Boolean`**
-  Sets the wallet filename. If the file does not exist, it creates a new wallet file. Returns `false` if the file does not exist.
+  Встановлює ім'я файлу гаманця. Якщо файл не існує, створює новий файл гаманця. Повертає `false`, якщо файл не існує.
 
 - **`ClearWalletArray()`**
-  Clears the in-memory wallet array.
+  Очищає масив гаманців у пам'яті.
 
 - **`InsertToWallArr(LData: WalletData): Boolean`**
-  Inserts a wallet record into the wallet array if it does not already exist. Returns `true` if successful.
+  Додає запис гаманця до масиву, якщо він ще не існує. Повертає `true`, якщо успішно.
 
 - **`GetWallArrIndex(Index: Integer): WalletData`**
-  Retrieves a wallet record from the wallet array by index. Returns a default `WalletData` if the index is out of bounds.
+  Отримує запис гаманця з масиву за індексом. Повертає стандартний `WalletData`, якщо індекс виходить за межі.
 
 - **`WallAddIndex(Address: String): Integer`**
-  Finds the index of a wallet in the array by its hash or custom name. Returns `-1` if not found.
+  Знаходить індекс гаманця в масиві за його хешем або індивідуальною назвою. Повертає `-1`, якщо не знайдено.
 
 - **`LenWallArr(): Integer`**
-  Returns the length of the wallet array.
+  Повертає довжину масиву гаманців.
 
 - **`ChangeWallArrPos(PosA, PosB: Integer): Boolean`**
-  Swaps the positions of two wallet records in the array. Returns `true` if successful.
+  Змінює місцями два записи гаманців у масиві. Повертає `true`, якщо успішно.
 
 - **`ClearWallPendings()`**
-  Resets the pending balance of all wallets in the array to `0`.
+  Скидає баланс очікуваних транзакцій для всіх гаманців у масиві до `0`.
 
 - **`SetPendingForAddress(Index: Integer; Value: int64)`**
-  Sets the pending balance for a specific wallet by index.
+  Встановлює баланс очікуваних транзакцій для конкретного гаманця за індексом.
 
-### File Operations
+### Операції з файлами
 - **`GetAddressFromFile(FileLocation: String; out WalletInfo: WalletData): Boolean`**
-  Reads a wallet record from a file. Returns `true` if successful.
+  Зчитує запис гаманця з файлу. Повертає `true`, якщо успішно.
 
 - **`ImportAddressesFromBackup(BakFolder: String): Integer`**
-  Imports wallet records from backup files in a specified folder. Returns the number of successfully imported records.
+  Імпортує записи гаманців із резервних файлів у вказаній папці. Повертає кількість успішно імпортованих записів.
 
 - **`SaveAddresstoFile(FileName: String; LData: WalletData): Boolean`**
-  Saves a wallet record to a specified file. Returns `true` if successful.
+  Зберігає запис гаманця у вказаний файл. Повертає `true`, якщо успішно.
 
 - **`CreateNewWallet(): Boolean`**
-  Creates a new wallet file with a newly generated address. Clears the wallet array before creation.
+  Створює новий файл гаманця з новою згенерованою адресою. Очищає масив гаманців перед створенням.
 
 - **`GetWalletAsStream(out LStream: TMemoryStream): int64`**
-  Loads the wallet file into a memory stream. Returns the size of the stream.
+  Завантажує файл гаманця у потік пам'яті. Повертає розмір потоку.
 
 - **`SaveWalletToFile(): Boolean`**
-  Saves the wallet array to the wallet file. Creates a backup of the file before saving. Returns `true` if successful.
+  Зберігає масив гаманців у файл гаманця. Створює резервну копію файлу перед збереженням. Повертає `true`, якщо успішно.
 
 - **`LoadWallet(wallet: String): Boolean`**
-  Loads wallet records from a file into the wallet array. Returns `true` if successful.
+  Завантажує записи гаманців із файлу в масив гаманців. Повертає `true`, якщо успішно.
 
 - **`VerifyAddressOnDisk(HashAddress: String): Boolean`**
-  Verifies if a specific wallet address exists in the wallet file. Returns `true` if found.
+  Перевіряє, чи існує конкретна адреса гаманця у файлі гаманця. Повертає `true`, якщо знайдено.
 
-## Variables
+## Змінні
 - **`WalletArray: array of WalletData`**
-  The in-memory array of wallet records.
+  Масив записів гаманців у пам'яті.
 
 - **`FileWallet: file of WalletData`**
-  The file used to store wallet records.
+  Файл, що використовується для зберігання записів гаманців.
 
 - **`WalletFilename: string`**
-  The default filename for the wallet file (`NOSODATA/wallet.pkw`).
+  Стандартне ім'я файлу гаманця (`NOSODATA/wallet.pkw`).
 
 - **`CS_WalletFile: TRTLCriticalSection`**
-  Critical section for synchronizing access to the wallet file.
+  Критична секція для синхронізації доступу до файлу гаманця.
 
 - **`CS_WalletArray: TRTLCriticalSection`**
-  Critical section for synchronizing access to the wallet array.
+  Критична секція для синхронізації доступу до масиву гаманців.
 
-## Initialization and Finalization
-- **Initialization**
-  - Initializes critical sections for `CS_WalletArray` and `CS_WalletFile`.
-  - Sets the initial length of `WalletArray` to `0`.
+## Ініціалізація та завершення
+- **Ініціалізація**
+  - Ініціалізує критичні секції для `CS_WalletArray` та `CS_WalletFile`.
+  - Встановлює початкову довжину `WalletArray` на `0`.
 
-- **Finalization**
-  - Frees the critical sections for `CS_WalletArray` and `CS_WalletFile`.
+- **Завершення**
+  - Звільняє критичні секції для `CS_WalletArray` та `CS_WalletFile`.
 nosowallcon 1.1
-January 26th, 2024
-Stand alone unit to control wallet addresses file and array
+26 січня 2024 року
+Окремий модуль для управління файлом адрес гаманців та масивом.
 }
 
 {$mode ObjFPC}{$H+}

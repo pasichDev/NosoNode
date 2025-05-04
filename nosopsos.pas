@@ -1,102 +1,101 @@
 unit nosopsos;
-
 {
   nosopsos 1.0
-  May 30th, 2023
-  Stand-alone unit to handle all PSOs (active and expired) on the Noso mainnet.
-  Required: Nosogeneral
+  30 травня 2023 року
+  Окремий модуль для обробки всіх PSO (активних і завершених) у основній мережі Noso.
+  Вимоги: Nosogeneral
 
 
-# Documentation for `nosopsos` Unit
+# Документація для модуля `nosopsos`
 
-## Overview
-The `nosopsos` unit is responsible for managing all PSOs (Proposal Smart Objects) on the Noso mainnet, including both active and expired PSOs. It provides functionality for file access, locked masternode control, and PSO header and data management. The unit relies on critical sections to ensure thread safety during concurrent operations.
+## Огляд
+Модуль `nosopsos` відповідає за управління всіма PSO (Proposal Smart Objects) у основній мережі Noso, включаючи як активні, так і завершені PSO. Він забезпечує функціональність для доступу до файлів, управління заблокованими мастернодами, а також управління заголовками та даними PSO. Модуль використовує критичні секції для забезпечення потокобезпеки під час одночасних операцій.
 
 ---
 
-## Types
+## Типи
 
 ### `TPSOData`
-Represents the structure of a PSO (Proposal Smart Object).
-- **Mode**: Integer indicating the mode of the PSO.
-- **Hash**: String representing the unique hash of the PSO.
-- **Owner**: String representing the owner of the PSO.
-- **Expire**: Integer indicating the expiration block of the PSO.
-- **Members**: String containing the members associated with the PSO.
-- **Params**: String containing additional parameters for the PSO.
+Представляє структуру PSO (Proposal Smart Object).
+- **Mode**: Ціле число, що вказує режим PSO.
+- **Hash**: Рядок, що представляє унікальний хеш PSO.
+- **Owner**: Рядок, що представляє власника PSO.
+- **Expire**: Ціле число, що вказує блок завершення PSO.
+- **Members**: Рядок, що містить учасників, пов'язаних із PSO.
+- **Params**: Рядок, що містить додаткові параметри для PSO.
 
 ### `TMNsLock`
-Represents a locked masternode.
-- **address**: String[32] containing the masternode's address.
-- **expire**: Integer indicating the block number when the lock expires.
+Представляє заблоковану мастерноду.
+- **address**: Рядок[32], що містить адресу мастерноди.
+- **expire**: Ціле число, що вказує номер блоку, коли блокування завершується.
 
 ### `TPSOHeader`
-Represents the header information for PSOs.
-- **Block**: Integer indicating the block number associated with the PSOs.
-- **MNsLock**: Integer representing the count of locked masternodes.
-- **count**: Integer representing the total number of PSOs.
+Представляє інформацію заголовка для PSO.
+- **Block**: Ціле число, що вказує номер блоку, пов'язаного з PSO.
+- **MNsLock**: Ціле число, що представляє кількість заблокованих мастернод.
+- **count**: Ціле число, що представляє загальну кількість PSO.
 
 ### `TPSOsArray`
-An array of `TPSOData` representing multiple PSOs.
+Масив `TPSOData`, що представляє кілька PSO.
 
 ---
 
-## Constants
+## Константи
 
-- **PSOsFileName**: Default file path for storing PSO data.
-- **MNsLockExpireLapse**: Integer representing the expiration lapse for locked masternodes.
-- **PSOTimestamp, PSOBlock, PSOAction, PSOFee, PSODuration, PSOTarget, PSOMinSize, PSOMaxSize, PSOOverfill, PSOSource**: String constants representing various PSO parameter labels.
-
----
-
-## Variables
-
-- **PSOsArray**: Array of `TPSOData` storing all PSOs.
-- **MNSLockArray**: Array of `TMNsLock` storing locked masternodes.
-- **PSOHeader**: `TPSOHeader` storing the current PSO header information.
-- **PSOFileHash**: String storing the hash of the PSO file.
-- **CS_PSOsArray, CS_PSOFile, CS_LockedMNs, CS_PSOHeaders**: Critical sections for thread-safe operations.
+- **PSOsFileName**: Шлях до файлу за замовчуванням для збереження даних PSO.
+- **MNsLockExpireLapse**: Ціле число, що представляє тривалість блокування для заблокованих мастернод.
+- **PSOTimestamp, PSOBlock, PSOAction, PSOFee, PSODuration, PSOTarget, PSOMinSize, PSOMaxSize, PSOOverfill, PSOSource**: Рядкові константи, що представляють різні мітки параметрів PSO.
 
 ---
 
-## Functions
+## Змінні
 
-### File Access
-- **`GetPSOHeadersFromFile`**: Loads PSO headers from the file.
-- **`LoadPSOFileFromDisk`**: Loads PSO data from the disk into memory.
-- **`SavePSOFileToDisk`**: Saves PSO data to the disk for a given block number.
-- **`GetPSOsAsMemStream`**: Retrieves PSO data as a memory stream.
-- **`SavePSOsToFile`**: Saves a memory stream containing PSO data to the file.
-
-### Locked Masternodes Control
-- **`GetLockedMNsCount`**: Returns the count of locked masternodes.
-- **`GetLockedMNIndex`**: Retrieves a locked masternode by index.
-- **`AddLockedMM`**: Adds a new locked masternode.
-- **`ClearExpiredLockedMNs`**: Clears expired locked masternodes based on the current block number.
-- **`IsLockedMN`**: Checks if a given address is a locked masternode.
-- **`LockedMNsRawString`**: Returns a raw string representation of locked masternodes.
-
-### PSO Headers Control
-- **`GetPSOHeaders`**: Retrieves the current PSO headers.
-- **`SetPSOHeaders`**: Updates the PSO headers with new data.
-
-### PSO Management
-- **`GetPSOValue`**: Retrieves a specific parameter value from a PSO's parameters.
-- **`AddNewPSO`**: Adds a new PSO to the array.
-- **`GetPSOsCopy`**: Returns a copy of the current PSOs array.
+- **PSOsArray**: Масив `TPSOData`, що зберігає всі PSO.
+- **MNSLockArray**: Масив `TMNsLock`, що зберігає заблоковані мастерноди.
+- **PSOHeader**: `TPSOHeader`, що зберігає поточну інформацію заголовка PSO.
+- **PSOFileHash**: Рядок, що зберігає хеш файлу PSO.
+- **CS_PSOsArray, CS_PSOFile, CS_LockedMNs, CS_PSOHeaders**: Критичні секції для потокобезпечних операцій.
 
 ---
 
-## Initialization and Finalization
+## Функції
 
-- **Initialization**: Initializes critical sections for thread-safe operations.
-- **Finalization**: Frees critical sections to release resources.
+### Доступ до файлів
+- **`GetPSOHeadersFromFile`**: Завантажує заголовки PSO з файлу.
+- **`LoadPSOFileFromDisk`**: Завантажує дані PSO з диска в пам'ять.
+- **`SavePSOFileToDisk`**: Зберігає дані PSO на диск для заданого номера блоку.
+- **`GetPSOsAsMemStream`**: Отримує дані PSO у вигляді потоку пам'яті.
+- **`SavePSOsToFile`**: Зберігає потік пам'яті, що містить дані PSO, у файл.
+
+### Управління заблокованими мастернодами
+- **`GetLockedMNsCount`**: Повертає кількість заблокованих мастернод.
+- **`GetLockedMNIndex`**: Отримує заблоковану мастерноду за індексом.
+- **`AddLockedMM`**: Додає нову заблоковану мастерноду.
+- **`ClearExpiredLockedMNs`**: Очищає завершені заблоковані мастерноди на основі поточного номера блоку.
+- **`IsLockedMN`**: Перевіряє, чи є задана адреса заблокованою мастернодою.
+- **`LockedMNsRawString`**: Повертає сирий рядок, що представляє заблоковані мастерноди.
+
+### Управління заголовками PSO
+- **`GetPSOHeaders`**: Отримує поточні заголовки PSO.
+- **`SetPSOHeaders`**: Оновлює заголовки PSO новими даними.
+
+### Управління PSO
+- **`GetPSOValue`**: Отримує конкретне значення параметра з параметрів PSO.
+- **`AddNewPSO`**: Додає новий PSO до масиву.
+- **`GetPSOsCopy`**: Повертає копію поточного масиву PSO.
+
+---
+
+## Ініціалізація та завершення
+
+- **Ініціалізація**: Ініціалізує критичні секції для потокобезпечних операцій.
+- **Завершення**: Звільняє критичні секції для вивільнення ресурсів.
 
 ---
 nosopsos 1.0
-May 30th, 2023
-Stand alone unit to handle all PSOs (active and expired) on noso mainnet.
-Required: Nosogeneral
+30 травня 2023 року
+Окремий модуль для обробки всіх PSO (активних і завершених) у основній мережі Noso.
+Вимоги: Nosogeneral
 }
 
 {$mode ObjFPC}{$H+}

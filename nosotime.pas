@@ -1,88 +1,85 @@
 unit NosoTime;
-
 {
   Nosotime 1.3
-  September 20th, 2023
-  Noso Time Unit for time synchronization on Noso project.
-  Requires indy package. (To-do: remove this dependency)
+  20 вересня 2023 року
+  Модуль часу Noso для синхронізації часу в проєкті Noso.
+  Потребує пакету indy. (Завдання: видалити цю залежність)
 
-  Changes:
-  - Random use of NTP servers.
-  - Async process limited to every 5 seconds.
-  - Block time related functions.
-  - Test NTPs.
-}
+  Зміни:
+  - Випадкове використання серверів NTP.
+  - Асинхронний процес обмежено кожні 5 секунд.
+  - Функції, пов’язані з часом блоку.
+  - Тестування NTP.
 
-{
   TThreadUpdateOffset:
-  - A thread class used to update the time offset asynchronously.
-  - Hosts: A string containing the NTP servers to be used.
-  - Execute: Overrides the thread's execution logic to call GetTimeOffset.
+  - Клас потоку, який використовується для асинхронного оновлення зсуву часу.
+  - Hosts: Рядок, що містить сервери NTP для використання.
+  - Execute: Перевизначає логіку виконання потоку для виклику GetTimeOffset.
 
   GetNetworkTimestamp:
-  - Retrieves the UNIX timestamp from a specified NTP server.
-  - Parameters:
-    - hostname: The NTP server hostname.
-  - Returns: The UNIX timestamp as an int64 or 0 if an error occurs.
+  - Отримує UNIX-мітку часу з вказаного сервера NTP.
+  - Параметри:
+    - hostname: Ім'я хоста сервера NTP.
+  - Повертає: UNIX-мітку часу як int64 або 0 у разі помилки.
 
   TimestampToDate:
-  - Converts a UNIX timestamp to a human-readable date string.
-  - Parameters:
-    - timestamp: The UNIX timestamp to convert.
-  - Returns: A string representation of the date.
+  - Перетворює UNIX-мітку часу у зручний для читання рядок дати.
+  - Параметри:
+    - timestamp: UNIX-мітка часу для перетворення.
+  - Повертає: Рядкове представлення дати.
 
   GetTimeOffset:
-  - Calculates the time offset using a random NTP server from a provided list.
-  - Parameters:
-    - NTPServers: A colon-separated string of NTP server hostnames.
-  - Returns: The calculated time offset as an int64.
+  - Обчислює зсув часу, використовуючи випадковий сервер NTP зі списку.
+  - Параметри:
+    - NTPServers: Рядок імен хостів серверів NTP, розділених двокрапкою.
+  - Повертає: Обчислений зсув часу як int64.
 
   UTCTime:
-  - Retrieves the current UTC UNIX timestamp adjusted by the time offset.
-  - Returns: The adjusted UNIX timestamp as an int64.
+  - Отримує поточну UTC UNIX-мітку часу, скориговану на зсув часу.
+  - Повертає: Скориговану UNIX-мітку часу як int64.
 
   UTCTimeStr:
-  - Retrieves the current UTC UNIX timestamp as a string for compatibility.
-  - Returns: The adjusted UNIX timestamp as a string.
+  - Отримує поточну UTC UNIX-мітку часу у вигляді рядка для сумісності.
+  - Повертає: Скориговану UNIX-мітку часу як рядок.
 
   UpdateOffset:
-  - Initiates an asynchronous update of the time offset using a thread.
-  - Parameters:
-    - NTPServers: A colon-separated string of NTP server hostnames.
+  - Ініціює асинхронне оновлення зсуву часу за допомогою потоку.
+  - Параметри:
+    - NTPServers: Рядок імен хостів серверів NTP, розділених двокрапкою.
 
   TimeSinceStamp:
-  - Calculates the time elapsed since a given UNIX timestamp.
-  - Parameters:
-    - Lvalue: The UNIX timestamp to calculate the elapsed time from.
-  - Returns: A string representing the elapsed time in seconds, minutes, hours, days, months, or years.
+  - Обчислює час, що минув з моменту заданої UNIX-мітки часу.
+  - Параметри:
+    - Lvalue: UNIX-мітка часу, з якої обчислюється минулий час.
+  - Повертає: Рядок, що представляє минулий час у секундах, хвилинах, годинах, днях, місяцях або роках.
 
   BlockAge:
-  - Calculates the current block age based on the UTC time.
-  - Returns: The block age as an integer.
+  - Обчислює поточний вік блоку на основі UTC часу.
+  - Повертає: Вік блоку як ціле число.
 
   NextBlockTimeStamp:
-  - Calculates the expected UNIX timestamp for the next block.
-  - Returns: The timestamp as an int64.
+  - Обчислює очікувану UNIX-мітку часу для наступного блоку.
+  - Повертає: Мітку часу як int64.
 
   IsBlockOpen:
-  - Determines if the current block is in the operation period.
-  - Returns: A boolean indicating whether the block is open.
+  - Визначає, чи знаходиться поточний блок у періоді операції.
+  - Повертає: Логічне значення, яке вказує, чи відкритий блок.
 
-  Variables:
-  - NosoT_TimeOffset: The current time offset as an int64.
-  - NosoT_LastServer: The last NTP server used as a string.
-  - NosoT_LastUpdate: The last update time as an int64.
+  Змінні:
+  - NosoT_TimeOffset: Поточний зсув часу як int64.
+  - NosoT_LastServer: Останній використаний сервер NTP як рядок.
+  - NosoT_LastUpdate: Час останнього оновлення як int64.
 
 Nosotime 1.3
-September 20th, 2023
-Noso Time Unit for time synchronization on Noso project.
-Requires indy package. (To-do: remove this dependancy)
+20 вересня 2023 року
+Модуль часу Noso для синхронізації часу в проєкті Noso.
+Потребує пакету indy. (Завдання: видалити цю залежність)
 
-Changes:
-- Random use of NTP servers.
-- Async process limited to every 5 seconds.
-- Block time related functions.
-- Test NTPs.
+Зміни:
+- Випадкове використання серверів NTP.
+- Асинхронний процес обмежено кожні 5 секунд.
+- Функції, пов’язані з часом блоку.
+- Тестування NTP.
 }
 
 {$mode ObjFPC}{$H+}
